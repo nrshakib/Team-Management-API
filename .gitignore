@@ -1,0 +1,21 @@
+# Environment variables
+.env
+.env.*
+
+# Keep the example configuration
+!.env.example
+
+# Python virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local database and test artifacts
+*.sqlite3
+.coverage
+htmlcov/
+
+# Environment-specific files
+.vscode/
