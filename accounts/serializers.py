@@ -11,7 +11,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password', 'confirm_password']
 
-        # validate method will check the similarity of password & confirm_password
+    # validate method will check the similarity of password & confirm_password
     def validate(self, attrs):
         password = attrs.get('password')
         confirm_password = attrs.get('confirm_password')
@@ -51,5 +51,5 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email']
+        fields = ['id', 'username', 'email', 'dob', 'address']
         read_only_fields = ['id', 'email']

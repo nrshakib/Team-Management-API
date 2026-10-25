@@ -56,3 +56,24 @@ class UserProfileView(APIView):
             data=serializer.data,
             http_status=status.HTTP_200_OK,
         )
+
+    def patch(self, request):
+        user = request.user
+        serializer = UserProfileSerializer(user, data = request.data, partial = True)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+
+            return api_response(
+                message = "Profile updated succefully",
+                data = serializer.data,
+                status_text="Success",
+                http_status=status.HTTP_200_OK
+            )
+
+        return api_response(
+            message = "Profile update failed",
+            data = None,
+            status_text="Failed",
+            http_status=status.HTTP_400_BAD_REQUEST
+        )
