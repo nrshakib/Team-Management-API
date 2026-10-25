@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from accounts.serializers import CustomTokenObtainPairSerializer, UserRegistrationSerializer
+from accounts.models import User
+from accounts.serializers import CustomTokenObtainPairSerializer, UserProfileSerializer, UserRegistrationSerializer
 from utils.utils import api_response
 
 # Create your views here.
@@ -38,4 +40,19 @@ class CustomLoginView(TokenObtainPairView):
             status_text="Success",
             data = serializer.validated_data, # tokens and data will be in the validated_data
             http_status= status.HTTP_200_OK,
+        )
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # here request finds the user from token,so filtering is not necessary
+        user = request.user
+        serializer = UserProfileSerializer(user)
+
+        return api_response(
+            message = "Profile retrieved successfully",
+            status_text="Success",
+            data=serializer.data,
+            http_status=status.HTTP_200_OK,
         )
