@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from accounts.models import User
-from accounts.serializers import CustomTokenObtainPairSerializer, UserProfileSerializer, UserRegistrationSerializer
+from accounts.serializers import ChangePasswordSerializer, CustomTokenObtainPairSerializer, UserProfileSerializer, UserRegistrationSerializer
 from utils.utils import api_response
 
 # Create your views here.
@@ -76,4 +76,27 @@ class UserProfileView(APIView):
             data = None,
             status_text="Failed",
             http_status=status.HTTP_400_BAD_REQUEST
+        )
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(
+            data = request.data,
+            context = {'request': request}
+        )
+
+        if serializer.is_valid(raise_exception=True):
+            new_password = serializer.validated_data['new_password']
+
+            user = request.user
+            user.set_password(new_password)
+            user.save()
+
+            return api_response(
+            message="Password changed successfully.",
+            status_text="Success",
+            data=None,
+            http_status=status.HTTP_200_OK
         )
