@@ -3,7 +3,7 @@ from django.db import models
 from config import settings
 
 # Create your models here.
-class TeamModel(models.Model):
+class Team(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=150, blank=True, default='')
     created_by = models.ForeignKey(
@@ -19,14 +19,14 @@ class TeamModel(models.Model):
     def __str__(self):
         return self.name
 
-class TeamMembershipModel(models.Model):
+class TeamMembership(models.Model):
     class MemberRoles(models.TextChoices):
         OWNER = 'owner', 'Owner'
         ADMIN = 'admin', 'Admin'
         MEMBER = 'member', 'Member'
 
     team = models.ForeignKey(
-        TeamModel,
+        Team,
         on_delete=models.CASCADE,
         related_name='membership'
     )
