@@ -7,6 +7,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from accounts.models import User
 from accounts.serializers import ChangePasswordSerializer, CustomTokenObtainPairSerializer, UserProfileSerializer, UserRegistrationSerializer
 from utils.utils import api_response
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 # Create your views here.
 class UserRegistrationView(APIView):
@@ -95,8 +97,40 @@ class ChangePasswordView(APIView):
             user.save()
 
             return api_response(
-            message="Password changed successfully.",
-            status_text="Success",
-            data=None,
-            http_status=status.HTTP_200_OK
+                message="Password changed successfully.",
+                status_text="Success",
+                data=None,
+                http_status=status.HTTP_200_OK
         )
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+
+        if not refresh_token:
+            return api_response(
+                message="Refresh token is required.",
+                status_text="Error",
+                data=None,
+                http_status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            
+            return api_response(
+                message = 'User logged out successfully',
+                status_text= 'Success',
+                data = None,
+                http_status = status.HTTP_200_OK
+            )
+        except TokenError:
+            return api_response(
+                message = 'Invalid or expired token',
+                status_text= 'Failed',
+                data = None,
+                http_status = status.HTTP_400_BAD_REQUEST
+            )
+            
