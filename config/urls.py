@@ -10,7 +10,7 @@ from accounts.views import CustomLoginView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('accounts.urls')),
-    path('api/v1/teams/', include('teams.urls')),
+    path('api/v1/', include('teams.urls')),
 
     #JWT Auth tokens
     path('api/v1/login/', CustomLoginView.as_view(), name = 'user-login'),
